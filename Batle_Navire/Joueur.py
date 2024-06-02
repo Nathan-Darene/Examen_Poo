@@ -5,7 +5,7 @@ class Joueur:
         """
         Initialise un joueur avec un nom et deux grilles (personnelle et de l'adversaire).
 
-        :param nom: Le nom du joueur.
+        :parametre nom: Le nom du joueur.
         """
         self.nom = nom
         self.grille_personnelle = Grille(10)  # Grille personnelle du joueur.

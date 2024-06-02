@@ -3,7 +3,7 @@ class Grille:
         """
         Initialise une grille de jeu de taille spécifiée (par défaut 10x10).
         
-        : taille: Taille de la grille (taille x taille).
+        : taille : Taille de la grille (taille x taille).
         """
         self.taille = taille
         self.navires = []  # Liste des navires placés sur la grille.
