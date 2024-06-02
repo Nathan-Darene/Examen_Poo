@@ -5,7 +5,12 @@
 #         Son but est d'initialiser les attributs de l'objet avec les valeurs fournies ou par défaut.
         
 # self: Le paramètre self en Python permet à une méthode de faire référence à l'instance courante de la classe, 
-#      lui permettant ainsi d'accéder à ses attributs et méthodes. 
+#      lui permettant ainsi d'accéder à ses attributs et méthodes.
+
+# self en Python permet à une méthode d'accéder aux attributs et méthodes de l'instance de la classe à laquelle elle est associée.
+# C'est pourquoi on utilise self pour définir les attributs de l'objet et
+# pour accéder à ces attributs dans les méthodes de la classe.
+
 # Imaginons que nous voulions créer une classe Personne qui représente une personne avec un nom et un âge, 
 # et nous voulons également avoir une méthode pour afficher les détails de cette personne.
 

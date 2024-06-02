@@ -1,22 +1,26 @@
 class Grille:
     def __init__(self, taille):
         """
-        Initialise une grille de jeu avec une taille spécifiée.
+        Initialisation d'une grille de jeu avec une taille spécifiée.
 
-        :param taille: La taille de la grille (nombre de cases en largeur et en hauteur).
+        taille: La taille de la grille (nombre de cases en largeur et en hauteur).
         """
         self.taille = taille
         self.navires = []  # Liste des navires placés sur la grille.
 
     def ajouter_navire(self, navire, positions):
         """
-        Ajoute un navire à la grille à des positions spécifiques.
+        Ajout d'un navire à la grille à des positions spécifiques.
 
-        :param navire: Instance de la classe Navire.
-        :param positions: Liste de tuples représentant les positions (x, y) du navire.
-        :raises ValueError: Si les positions sont en dehors de la grille.
+        navire: Instance de la classe Navire.
+        positions: Liste de tuples représentant les positions (x, y) du navire.
+        ValueError: Si les positions sont en dehors de la grille.
         """
         if all(0 <= x < self.taille and 0 <= y < self.taille for x, y in positions):
+            """
+            0 <= x < self.taille and 0 <= y < self.taille: C'est la condition qui vérifie si les coordonnées (x, y) sont valides dans la grille. 
+            Elle vérifie que x et y sont tous deux supérieurs ou égaux à zéro et strictement inférieurs à self.taille."""
+            
             navire.placer(positions)
             self.navires.append(navire)
         else:

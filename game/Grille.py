@@ -9,10 +9,12 @@ class Grille:
         self.navires = []  # Liste des navires placés sur la grille.
         self.tirs = []  # Liste des tirs reçus.
 
-    """Déclaration de la méthode
+    """
     # self : fait référence à l'instance de la classe qui contient cette méthode.
     # navire : est une instance de la classe Navire.
     # positions : est une liste de tuples représentant les positions (x, y) où le navire doit être placé sur la grille."""
+
+    #Déclaration de la méthode
     def ajouter_navire(self, navire, positions):
         """
         Ajoute un navire à la grille à des positions spécifiques.
