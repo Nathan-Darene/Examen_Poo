@@ -12,8 +12,6 @@ from affichge_ecran import *
 from Menu import *
 
 
-
-
 if __name__ == "__main__":
     menu = Menu(["Jouer", "Options", "Quitter"])
     ecran_jeu = EcranJeu()

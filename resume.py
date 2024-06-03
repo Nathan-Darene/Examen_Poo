@@ -7,9 +7,11 @@
 # self: Le paramètre self en Python permet à une méthode de faire référence à l'instance courante de la classe, 
 #      lui permettant ainsi d'accéder à ses attributs et méthodes.
 
+
 # self en Python permet à une méthode d'accéder aux attributs et méthodes de l'instance de la classe à laquelle elle est associée.
 # C'est pourquoi on utilise self pour définir les attributs de l'objet et
 # pour accéder à ces attributs dans les méthodes de la classe.
+
 
 # Imaginons que nous voulions créer une classe Personne qui représente une personne avec un nom et un âge, 
 # et nous voulons également avoir une méthode pour afficher les détails de cette personne.
@@ -72,7 +74,7 @@ voiture2 = Voiture("Ford", "Bleu")
 #            et des comportements (sous forme de méthodes) qui agissent sur ces données.
 
 # exemple:
-
+ 
 class Voiture:
     def __init__(self, marque, modele):
         self.marque = marque
@@ -86,6 +88,8 @@ class Voiture:
 voiture1 = Voiture("Toyota", "Corolla")
 voiture2 = Voiture("Honda", "Civic")
 
+
+voiture1.afficher_details()
 # Dans cet exemple, voiture1 et voiture2 sont des objets de la classe Voiture. 
 # Chaque objet a ses propres attributs (marque et modele) qui sont définis lors 
 # de la création de l'objet à l'aide de la méthode __init__. De plus, chaque objet 
