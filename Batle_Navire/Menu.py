@@ -83,7 +83,7 @@ class Menu:
         taille_police = 70
         police = pygame.font.Font(chemin_police, taille_police)
         for i, option_texte in enumerate(self.options):
-            couleur = NOIR if i != self.selected_option else VERT
+            couleur = NOIR if i != self.selected_option else MARRON_1
             self._afficher_texte(option_texte, largeur // 1.3, 500 + i * 100, couleur,police)
 
     def _afficher_texte(self, texte, x, y, couleur,police):

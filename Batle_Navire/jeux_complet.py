@@ -7,6 +7,9 @@ import random
 import time
 import os
 
+
+
+
 #importation des class et methode 
 from affichge_ecran import *
 from Menu import *
@@ -33,7 +36,7 @@ if __name__ == "__main__":
 
         elif ecran_actuel == "Jouer":
             if ecran_chargement.video_terminee():
-                ecran_jeu.jouer()  # Afficher le jeu JeuJcJ lorsque ecran_actuel est "Jeu"
+                ecran_jeu.jouer()  # Afficher le jeu lorsque ecran_actuel est "Jeu"
             else:
                 ecran_chargement.afficher()
         elif ecran_actuel == "Options":

@@ -15,12 +15,14 @@ MARRON_CLAIR = (240, 217, 181)
 MARRON = (181, 136, 98)
 ROUGE = (255, 0, 0)
 VERT = (0, 255, 0)
+MARRON_1 = (240, 114, 10)
 FOND=(255,221,204)
 FOND1=(4,5,8,255)
 FOND2=(31,37,40,255)
 OR = (255,215,0)
 ORANGE = (214, 125, 8)
 NOIR_DOUCE = (29, 29, 28)
+
 # Taille de la fenêtre
 largeur, hauteur = 1920, 1080
 fenetre = pygame.display.set_mode((largeur, hauteur))
