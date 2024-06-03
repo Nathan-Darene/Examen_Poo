@@ -8,7 +8,7 @@ class Joueur:
         :parametre nom: Le nom du joueur.
         """
         self.nom = nom
-        self.grille_personnelle = Grille(10)  # Grille personnelle du joueur.
+        self.grille_personnelle = Grille(10)  # Grille personnelle du joue
         self.grille_adversaire = Grille(10)  # Grille de l'adversaire.
 
     def placer_navire(self, navire, positions):
