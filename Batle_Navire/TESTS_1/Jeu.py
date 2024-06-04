@@ -1,5 +1,4 @@
 import random
-
 from Grille import *
 from Bateau import *
 # from Joueur import *

@@ -1,6 +1,7 @@
 import pygame
 from affichge_ecran import *
 from moviepy.editor import VideoFileClip
+from pydub import AudioSegment
 import numpy as np
 import math
 import sys
@@ -16,6 +17,10 @@ class Menu:
         self.background = pygame.image.load("image/assets/compass-3408928_1920.jpg").convert()
         # Redimensionnez l'image pour correspondre à la taille de la fenêtre
         self.background = pygame.transform.scale(self.background, (largeur, hauteur))
+        # Charger le son de sélection
+        self.son_selection = pygame.mixer.Sound("sounds/pirate.mp3")
+
+        
 
     def afficher(self):
         # Affichez l'image de fond à la place de la couleur de fond
@@ -23,6 +28,8 @@ class Menu:
         # Le reste de votre fonction d'affichage reste inchangé
         self._afficher_titre()
         self._afficher_options()
+        # Jouer le son de sélection lors de l'affichage du menu
+        self.son_selection.play()
         pygame.display.flip()
 
     def _afficher_titre(self):

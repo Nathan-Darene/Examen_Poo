@@ -60,7 +60,7 @@ class Grille:
 
     def recevoir_tir(self, x, y):
         if self.grille[x][y] > 0:
-            # Remplace le nombre par "X" si la case œ un bateau
+            # Remplace le nombre par "X" si la case à un bateau
             self.grille[x][y] = "X"
             return "Touché"
         elif self.grille[x][y] == 0:
