@@ -11,6 +11,7 @@ class Grille:
         self.bateaux.append(bateau)
 
     def verifier_positions_bateau(self, positions):
+        # Vérifie si les positions des bateaux respectent l'espacement
         for (x, y) in positions:
             if self.grille[x][y] != 0:
                 return False
@@ -22,6 +23,7 @@ class Grille:
         return True
 
     def placer_bateau_avec_espacement(self, bateau):
+        # Place un bateau sur la grille en tenant compte de l'espacement
         espacement = 1
         while True:
             orientation = random.choice(["horizontal", "vertical"])
@@ -34,6 +36,7 @@ class Grille:
                 y = random.randint(0, 9)
                 positions = [(x + i, y) for i in range(bateau.taille)]
             if self.verifier_positions_bateau(positions):
+                # Ajoute un espace vide autour du bateau
                 for (x, y) in positions:
                     for dx in range(-1, 2):
                         for dy in range(-1, 2):
@@ -50,7 +53,7 @@ class Grille:
         for i, ligne in enumerate(self.grille):
             ligne_affichage = f"{i+1:2}   | "
             for case in ligne:
-                if case == 6 or case == "X":
+                if case == 6:
                     ligne_affichage += "X"
                 else:
                     ligne_affichage += str(case) if case != 0 else "0"
@@ -59,12 +62,7 @@ class Grille:
             print(separateur)
 
     def recevoir_tir(self, x, y):
-        if self.grille[x][y] > 0:
-            # Remplace le nombre par "X" si la case contient un bateau
-            self.grille[x][y] = "X"
-            return "Touché"
-        elif self.grille[x][y] == 0:
-            # Marque la case comme touchée sans bateau
+        if self.grille[x][y] == 0:
             self.grille[x][y] = 0
             return "À l'eau"
         elif self.grille[x][y] == 6:
@@ -72,8 +70,6 @@ class Grille:
         else:
             for bateau in self.bateaux:
                 if bateau.est_touche((x, y)):
-                    # Marque la case touchée par le joueur sur la grille de l'IA
-                    self.grille[x][y] = "X"
                     self.grille[x][y] = 6
                     if bateau.est_coule():
                         return f"Coulé {bateau.nom}"

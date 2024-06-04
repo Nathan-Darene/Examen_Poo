@@ -50,7 +50,7 @@ class Grille:
         for i, ligne in enumerate(self.grille):
             ligne_affichage = f"{i+1:2}   | "
             for case in ligne:
-                if case == 6 or case == "X":
+                if case == 6:
                     ligne_affichage += "X"
                 else:
                     ligne_affichage += str(case) if case != 0 else "0"
@@ -64,7 +64,6 @@ class Grille:
             self.grille[x][y] = "X"
             return "Touché"
         elif self.grille[x][y] == 0:
-            # Marque la case comme touchée sans bateau
             self.grille[x][y] = 0
             return "À l'eau"
         elif self.grille[x][y] == 6:
@@ -72,8 +71,6 @@ class Grille:
         else:
             for bateau in self.bateaux:
                 if bateau.est_touche((x, y)):
-                    # Marque la case touchée par le joueur sur la grille de l'IA
-                    self.grille[x][y] = "X"
                     self.grille[x][y] = 6
                     if bateau.est_coule():
                         return f"Coulé {bateau.nom}"
