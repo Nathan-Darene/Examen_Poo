@@ -1,5 +1,5 @@
 import random
-class Grille:
+class Grille_:
     def __init__(self):
         self.grille = [[0] * 10 for _ in range(10)]
         self.bateaux = []
@@ -53,7 +53,7 @@ class Grille:
                 if case == 6 or case == "X":
                     ligne_affichage += "X"
                 else:
-                    ligne_affichage += str(case) if case != 0 else "0"
+                    ligne_affichage += str(case) if case != 0 else " "
                 ligne_affichage += " | "
             print(ligne_affichage)
             print(separateur)
