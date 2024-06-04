@@ -52,39 +52,27 @@ class Grille:
         print(separateur)
         for i, ligne in enumerate(self.grille):
             ligne_affichage = f"{i+1:2}   | "
+            # boucle pour si la zone toucher par le tir est =! 0,
+            # cela devras afficher le signe X comme partie du beteau touché 
             for case in ligne:
-                if case != 0:
-                    # Afficher les cases différentes de zéro
-                    if case == 6:
-                        ligne_affichage += "X"
-                    else:
-                        ligne_affichage += str(case)
+                if case == 6:
+                    ligne_affichage += "X"
                 else:
-                    # Pour les zéros, afficher un espace vide
-                    ligne_affichage += " "
+                    ligne_affichage += str(case) if case != 6 else "0"
                 ligne_affichage += " | "
             print(ligne_affichage)
             print(separateur)
 
-
-
     def recevoir_tir(self, x, y):
         if self.grille[x][y] == 0:
-            # Si la case est vide, marquez-la comme touchée sans bateau avec "0"
             self.grille[x][y] = 0
             return "À l'eau"
         elif self.grille[x][y] == 6:
-            # Si la case a déjà été touchée, retournez "Déjà touché"
             return "Déjà touché"
         else:
-            # Sinon, vérifiez quel bateau est touché et mettez à jour la grille en conséquence
             for bateau in self.bateaux:
                 if bateau.est_touche((x, y)):
-                    # Marquez la case touchée par le joueur avec "X"
                     self.grille[x][y] = "X"
-                    # Si le bateau est coulé, retournez un message indiquant le bateau coulé
                     if bateau.est_coule():
                         return f"{bateau.nom} Coulé"
-                    # Sinon, retournez la taille du bateau touché
                     return bateau.taille
-

@@ -11,7 +11,6 @@ class Grille:
         self.bateaux.append(bateau)
 
     def verifier_positions_bateau(self, positions):
-        # Vérifie si les positions des bateaux respectent l'espacement
         for (x, y) in positions:
             if self.grille[x][y] != 0:
                 return False
@@ -23,7 +22,6 @@ class Grille:
         return True
 
     def placer_bateau_avec_espacement(self, bateau):
-        # Place un bateau sur la grille en tenant compte de l'espacement
         espacement = 1
         while True:
             orientation = random.choice(["horizontal", "vertical"])
@@ -36,7 +34,6 @@ class Grille:
                 y = random.randint(0, 9)
                 positions = [(x + i, y) for i in range(bateau.taille)]
             if self.verifier_positions_bateau(positions):
-                # Ajoute un espace vide autour du bateau
                 for (x, y) in positions:
                     for dx in range(-1, 2):
                         for dy in range(-1, 2):
@@ -46,45 +43,36 @@ class Grille:
                 break
 
     def afficher(self):
-        lettres = "       " + "   ".join(chr(ord('A') + i) for i in range(10))
+        lettres = "       " + " | ".join(chr(ord('A') + i) for i in range(10))
         print(lettres)
-        separateur = "     +" + "+".join(["---"] * 10) + "+"
+        separateur = "     +" + "+".join(["--"] * 10) + "+"
         print(separateur)
         for i, ligne in enumerate(self.grille):
             ligne_affichage = f"{i+1:2}   | "
             for case in ligne:
-                if case != 0:
-                    # Afficher les cases différentes de zéro
-                    if case == 6:
-                        ligne_affichage += "X"
-                    else:
-                        ligne_affichage += str(case)
+                if case == 6 or case == "X":
+                    ligne_affichage += "X"
                 else:
-                    # Pour les zéros, afficher un espace vide
-                    ligne_affichage += " "
+                    ligne_affichage += str(case) if case != 0 else "0"
                 ligne_affichage += " | "
             print(ligne_affichage)
             print(separateur)
 
-
-
     def recevoir_tir(self, x, y):
-        if self.grille[x][y] == 0:
-            # Si la case est vide, marquez-la comme touchée sans bateau avec "0"
+        if self.grille[x][y] > 0:
+            # Remplace le nombre par "X" si la case contient un bateau
+            self.grille[x][y] = "X"
+            return "Touché"
+        elif self.grille[x][y] == 0:
+            # Marque la case comme touchée sans bateau
             self.grille[x][y] = 0
             return "À l'eau"
         elif self.grille[x][y] == 6:
-            # Si la case a déjà été touchée, retournez "Déjà touché"
             return "Déjà touché"
         else:
-            # Sinon, vérifiez quel bateau est touché et mettez à jour la grille en conséquence
             for bateau in self.bateaux:
                 if bateau.est_touche((x, y)):
-                    # Marquez la case touchée par le joueur avec "X"
+                    # Marque la case touchée par le joueur sur la grille de l'IA
                     self.grille[x][y] = "X"
-                    # Si le bateau est coulé, retournez un message indiquant le bateau coulé
                     if bateau.est_coule():
-                        return f"{bateau.nom} Coulé"
-                    # Sinon, retournez la taille du bateau touché
-                    return bateau.taille
-
+                        return f"Coulé"
