@@ -70,21 +70,19 @@ class Grille:
 
     def recevoir_tir(self, x, y):
         if self.grille[x][y] == 0:
-            # Si la case est vide, marquez-la comme touchée sans bateau avec "0"
-            self.grille[x][y] = 0
+            self.grille[x][y] = "0"  # Mettre à jour la case touchée mais vide avec "0"
             return "À l'eau"
         elif self.grille[x][y] == 6:
-            # Si la case a déjà été touchée, retournez "Déjà touché"
             return "Déjà touché"
         else:
-            # Sinon, vérifiez quel bateau est touché et mettez à jour la grille en conséquence
             for bateau in self.bateaux:
                 if bateau.est_touche((x, y)):
-                    # Marquez la case touchée par le joueur avec "X"
                     self.grille[x][y] = "X"
-                    # Si le bateau est coulé, retournez un message indiquant le bateau coulé
                     if bateau.est_coule():
                         return f"{bateau.nom} Coulé"
-                    # Sinon, retournez la taille du bateau touché
                     return bateau.taille
+
+
+
+
 
