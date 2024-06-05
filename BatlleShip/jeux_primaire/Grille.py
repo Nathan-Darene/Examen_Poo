@@ -3,7 +3,7 @@ import random
 class Grille:
     def __init__(self):
         self.grille = [[0] * 10 for _ in range(10)]
-        self.tirs_rates = [[False] * 10 for _ in range(10)]
+        self.tirs_rates = [[False] * 10 for _ in range(10)]  # Grille pour suivre les tirs ratés
         self.bateaux = []
 
     def ajouter_bateau(self, bateau, positions):
@@ -50,4 +50,21 @@ class Grille:
                     self.grille[x][y] = "X"
                     if bateau.est_coule():
                         return f"{bateau.nom} Coulé"
-                    return bateau.taille
+                    return "Touché"
+        return "À l'eau"  # En cas de tir dans l'eau
+
+    def afficher(self):
+        lettres = "       " + "   ".join(chr(ord('A') + i) for i in range(10))
+        print(lettres)
+        separateur = "     +" + "+".join(["---"] * 10) + "+"
+        print(separateur)
+        for i, ligne in enumerate(self.grille):
+            ligne_affichage = f"{i+1:2}   | "
+            for case in ligne:
+                if case == "X":
+                    ligne_affichage += "X"
+                else:
+                    ligne_affichage += str(case) if case != 0 else " "
+                ligne_affichage += " | "
+            print(ligne_affichage)
+            print(separateur)
