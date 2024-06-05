@@ -6,6 +6,7 @@ class Jeu:
     def __init__(self):
         self.grille_joueur = Grille()
         self.grille_ia = Grille()
+        self.tirs_joueur = [[None for _ in range(10)] for _ in range(10)]
         self.bateaux = [("Porte-avions", 5), ("Croiseur", 4), ("Contre-torpilleur", 3), ("Sous-marin", 3), ("Torpilleur", 2)]
 
     def placer_bateaux_aleatoire(self, grille):
@@ -28,17 +29,16 @@ class Jeu:
     def afficher_grilles(self):
         separateur = "     +" + "+".join(["---"] * 10) + "+"
         print("")
-        print("\t\tGrille du joueur:".center(30) + " " * 10 + "\t\t\t Grille de l'IA:".center(30))
+        print("\t\tGrille du joueur:".center(30) + " " * 10 + "\t\t\tGrille de l'IA:".center(30))
         print("")
         lettres = "       " + "   ".join(chr(ord('A') + i) for i in range(10)) + "  "
         print(lettres + " " * 10 + lettres)
         print(separateur + " " * 10 + separateur)
         for i in range(10):
             ligne_joueur = f"{i+1:2}   | " + " | ".join(str(x) if x != 0 or x == "X" else " " for x in self.grille_joueur.grille[i]) + " |"
-            # ligne_joueur = f"{i+1:2}   | " + " | ".join(str(x) if x != 0 or x == "X" else " " for x in self.grille_joueur.grille[i]) + " |"
-            ligne_ia = f"{i+1:2}   | " + " | ".join("X" if x == "X" else "0" if self.grille_ia.tirs_rates[i][j] else " " for j, x in enumerate(self.grille_ia.grille[i])) + " |"
+            ligne_ia = f"{i+1:2}   | " + " | ".join(" " if x is None else "X" if x == "X" else "0" for x in self.tirs_joueur[i]) + " |"
             print(ligne_joueur + " " * 10 + ligne_ia)
-            print(separateur + " " * 10 + separateur)
+            print(separateur + " " * 10 + separateur) 
 
     def jouer(self):
         self.placer_bateaux_aleatoire(self.grille_joueur)
@@ -66,6 +66,7 @@ class Jeu:
                 x = int(coup[1:]) - 1
                 if 0 <= x < 10 and 0 <= y < 10:
                     resultat = self.grille_ia.recevoir_tir(x, y)
+                    self.tirs_joueur[x][y] = "X" if resultat == "touché" else 0
                     print(f" >>> Cible {resultat}")
                 else:
                     print("Coordonnées invalides. Essayez encore.")
@@ -74,7 +75,5 @@ class Jeu:
                 x = random.randint(0, 9)
                 y = random.randint(0, 9)
                 resultat = self.grille_joueur.recevoir_tir(x, y)
-                print(f"L'IA tiré en {chr(65+y)}{x+1} : >>> {resultat}")
+                print(f"L'IA a tiré en {chr(65+y)}{x+1} : >>> {resultat}")
             tour_joueur = not tour_joueur
-
-# Assurez-vous d'avoir les classes Grille et Bateau définies dans les modules importés.

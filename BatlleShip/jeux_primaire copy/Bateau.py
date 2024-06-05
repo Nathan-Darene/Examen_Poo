@@ -15,4 +15,4 @@ class Bateau:
         return False
 
     def est_coule(self):
-        return self.touches == len(self.positions)
+        return self.touches == self.taille

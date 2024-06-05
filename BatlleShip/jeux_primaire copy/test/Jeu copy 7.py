@@ -35,8 +35,7 @@ class Jeu:
         print(separateur + " " * 10 + separateur)
         for i in range(10):
             ligne_joueur = f"{i+1:2}   | " + " | ".join(str(x) if x != 0 or x == "X" else " " for x in self.grille_joueur.grille[i]) + " |"
-            # ligne_joueur = f"{i+1:2}   | " + " | ".join(str(x) if x != 0 or x == "X" else " " for x in self.grille_joueur.grille[i]) + " |"
-            ligne_ia = f"{i+1:2}   | " + " | ".join("X" if x == "X" else "0" if self.grille_ia.tirs_rates[i][j] else " " for j, x in enumerate(self.grille_ia.grille[i])) + " |"
+            ligne_ia = f"{i+1:2}   | " + " | ".join("X" if x == "X" else " " if x != 0 else "0" for x in self.grille_ia.grille[i]) + " |"
             print(ligne_joueur + " " * 10 + ligne_ia)
             print(separateur + " " * 10 + separateur)
 
@@ -76,5 +75,3 @@ class Jeu:
                 resultat = self.grille_joueur.recevoir_tir(x, y)
                 print(f"L'IA tiré en {chr(65+y)}{x+1} : >>> {resultat}")
             tour_joueur = not tour_joueur
-
-# Assurez-vous d'avoir les classes Grille et Bateau définies dans les modules importés.
