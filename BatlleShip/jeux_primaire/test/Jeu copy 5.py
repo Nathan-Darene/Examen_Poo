@@ -3,6 +3,7 @@ from Grille import *
 from Bateau import *
 # from Joueur import *
 # from IA import *
+
 class Jeu:
     def __init__(self):
         self.grille_joueur = Grille()
@@ -36,33 +37,9 @@ class Jeu:
         print(separateur + " " * 10 + separateur)
         for i in range(10):
             ligne_joueur = f"{i+1:2}   | " + " | ".join(str(x) if x != 0 or x == "X" else " " for x in self.grille_joueur.grille[i]) + " |"
-            ligne_ia =     f"{i+1:2}   | " + " | ".join(str(x) if x != 0 or x == "X" else " " for x in self.grille_ia.grille[i]) + " |"
-
-            # ligne_ia =     f"{i+1:2}   | " + " | ".join(" " if x == 0 and self.grille_ia.grille[i][j] == 0 else str(x) if x == "X" else " " for j, x in enumerate(self.grille_ia.grille[i]))
-
-            print(ligne_joueur + " " * 10 + ligne_ia + " |")
+            ligne_ia = f"{i+1:2}   | " + " | ".join("X" if x == "X" else "0" if x == 0 else " " for x in self.grille_ia.grille[i]) + " |"
+            print(ligne_joueur + " " * 10 + ligne_ia)
             print(separateur + " " * 10 + separateur)
-
-
-    # def afficher_grilles(self):
-    #     separateur = "     +" + "+".join(["---"] * 10) + "+"
-    #     print("")
-    #     print("\t\tGrille du joueur:".center(30) + " " * 10 + "\t\t\t Grille de l'IA:".center(30))
-    #     print("")
-    #     lettres = "       " + "   ".join(chr(ord('A') + i) for i in range(10)) + "  "
-    #     print(lettres + " " * 10 + lettres)
-    #     print(separateur + " " * 10 + separateur)
-    #     for i in range(10):
-    #         ligne_joueur = f"{i+1:2}   | " + " | ".join(str(x) if x != 0 or x == "X" else " " for x in self.grille_joueur.grille[i]) + " |"
-    #         ligne_ia = f"{i+1:2}   | " + " | ".join(str(x) if x != 0 or x == "X" else "0" for x in self.grille_ia.grille[i]) + " |"
-    #         print(ligne_joueur + " " * 10 + ligne_ia)
-    #         print(separateur + " " * 10 + separateur)
-
-
-
-
-
-
 
     def jouer(self):
         self.placer_bateaux_aleatoire(self.grille_joueur)

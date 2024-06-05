@@ -1,13 +1,12 @@
 import random
 from Grille import *
 from Bateau import *
-# from Joueur import *
-# from IA import *
+
 class Jeu:
     def __init__(self):
         self.grille_joueur = Grille()
         self.grille_ia = Grille()
-        self.bateaux = [ ("Porte-avions", 5), ("Croiseur", 4), ("Contre-torpilleur", 3), ("Sous-marin", 3), ("Torpilleur", 2)]
+        self.bateaux = [("Porte-avions", 5), ("Croiseur", 4), ("Contre-torpilleur", 3), ("Sous-marin", 3), ("Torpilleur", 2)]
 
     def placer_bateaux_aleatoire(self, grille):
         for nom, taille in self.bateaux:
@@ -36,14 +35,9 @@ class Jeu:
         print(separateur + " " * 10 + separateur)
         for i in range(10):
             ligne_joueur = f"{i+1:2}   | " + " | ".join(str(x) if x != 0 or x == "X" else " " for x in self.grille_joueur.grille[i]) + " |"
-            ligne_ia = f"{i+1:2}   | " + " | ".join(str(x) if x != 0 and x != "X" else " " for x in self.grille_ia.grille[i])
-            print(ligne_joueur + " " * 10 + ligne_ia + " |")
+            ligne_ia = f"{i+1:2}   | " + " | ".join("X" if x == "X" else " " if x != 0 else "0" for x in self.grille_ia.grille[i]) + " |"
+            print(ligne_joueur + " " * 10 + ligne_ia)
             print(separateur + " " * 10 + separateur)
-
-
-
-
-
 
     def jouer(self):
         self.placer_bateaux_aleatoire(self.grille_joueur)

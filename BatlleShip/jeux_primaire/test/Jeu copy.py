@@ -1,6 +1,6 @@
 import random
 
-from Batle_Navire.TESTS_1.Grille import *
+from Grille import *
 from Bateau import *
 # from Joueur import *
 # from IA import *
