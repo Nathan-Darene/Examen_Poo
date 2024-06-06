@@ -68,3 +68,9 @@ class Grille:
                 ligne_affichage += " | "
             print(ligne_affichage)
             print(separateur)
+
+    def verifier_victoire(self):
+        for bateau in self.bateaux:
+            if not bateau.est_coule():
+                return False
+        return True

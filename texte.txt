@@ -1,1 +1,25 @@
-papa mange du riz 
+Explications
+Classe Cell :
+
+Représente une cellule de la grille. Elle sait dessiner elle-même et gérer les événements de tir (hit).
+Méthodes :
+__init__: Initialise la cellule avec sa position et son état.
+draw: Dessine la cellule.
+set_ship: Place un bateau sur la cellule.
+hit_cell: Gère un tir sur la cellule.
+Classe Grid :
+
+Représente une grille de 10x10 cellules.
+Méthodes :
+__init__: Initialise la grille avec les cellules.
+draw: Dessine toutes les cellules de la grille.
+handle_click: Gère les clics sur la grille.
+Classe Game :
+
+Gère la logique principale du jeu.
+Méthodes :
+__init__: Initialise les grilles pour le joueur et l'IA.
+run: Contient la boucle principale du jeu.
+Fonction main :
+
+Crée une instance de Game et lance la boucle de jeu.

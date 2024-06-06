@@ -1,116 +1,80 @@
-import pygame
-import sys
-from Navire import Navire
-from Joueur import Joueur
-from IA import IA
+import random
+from Grille import *
+from Bateau import *
 
 class Jeu:
-    def __init__(self, joueur1, joueur2):
-        """
-        # Initialise le jeu avec deux joueurs et configure la fenêtre Pygame.
+    def __init__(self):
+        self.grille_joueur = Grille()
+        self.grille_ia = Grille()
+        self.tirs_joueur = [[False] * 10 for _ in range(10)]  # Grille pour suivre les tirs du joueur
+        self.bateaux = [("Porte-avions", 5), ("Croiseur", 4), ("Contre-torpilleur", 3), ("Sous-marin", 3), ("Torpilleur", 2)]
 
-        :param joueur1: Instance de la classe Joueur représentant le premier joueur.
-        :param joueur2: Instance de la classe Joueur représentant le second joueur.
-        """
-        self.joueur1 = joueur1
-        self.joueur2 = joueur2
-        self.tour = joueur1  # Le jeu commence avec le joueur1.
-        self.taille_case = 40
-        self.largeur_fenetre = self.taille_case * 12 * 2
-        self.hauteur_fenetre = self.taille_case * 12
-        self.fenetre = pygame.display.set_mode((self.largeur_fenetre, self.hauteur_fenetre))
-        pygame.display.set_caption("Bataille Navale")
+    def placer_bateaux_aleatoire(self, grille):
+        for nom, taille in self.bateaux:
+            place = False
+            while not place:
+                orientation = random.choice(["horizontal", "vertical"])
+                if orientation == "horizontal":
+                    x = random.randint(0, 9)
+                    y = random.randint(0, 9 - taille)
+                    positions = [(x, y + i) for i in range(taille)]
+                else:
+                    x = random.randint(0, 9 - taille)
+                    y = random.randint(0, 9)
+                    positions = [(x + i, y) for i in range(taille)]
+                if all(grille.grille[x][y] == 0 for (x, y) in positions):
+                    grille.ajouter_bateau(Bateau(nom, taille), positions)
+                    place = True
 
-    def dessiner_grille(self, debut_x, debut_y):
-        """
-        Dessine une grille de jeu à une position spécifiée avec des cases semi-transparentes.
-
-        :param debut_x: Coordonnée x du coin supérieur gauche de la grille.
-        :param debut_y: Coordonnée y du coin supérieur gauche de la grille.
-        """
-        for x in range(10):
-            for y in range(10):
-                # Dessine un rectangle semi-transparent
-                rect = pygame.Surface((self.taille_case, self.taille_case), pygame.SRCALPHA)
-                rect.fill((0, 0, 255, 64))  # Bleu avec opacité réduite
-                self.fenetre.blit(rect, (debut_x + x * self.taille_case, debut_y + y * self.taille_case))
-        
-        for x in range(11):
-            pygame.draw.line(self.fenetre, (0, 0, 0), (debut_x + x * self.taille_case, debut_y), (debut_x + x * self.taille_case, debut_y + self.taille_case * 10))
-            pygame.draw.line(self.fenetre, (0, 0, 0), (debut_x, debut_y + x * self.taille_case), (debut_x + self.taille_case * 10, debut_y + x * self.taille_case))
-
-    def changer_tour(self):
-        """
-        Change le tour au joueur suivant.
-        """
-        self.tour = self.joueur1 if self.tour == self.joueur2 else self.joueur2
-
-    def est_fini(self):
-        """
-        Vérifie si le jeu est terminé (tous les navires d'un joueur sont coulés).
-
-        :return: True si le jeu est terminé, sinon False.
-        """
-        return all(navire.est_coule() for navire in self.joueur1.grille_personnelle.navires) or \
-               all(navire.est_coule() for navire in self.joueur2.grille_personnelle.navires)
+    def afficher_grilles(self):
+        separateur = "     +" + "+".join(["---"] * 10) + "+"
+        print("")
+        print("\t\tGrille du joueur:".center(30) + " " * 10 + "\t\t\t Grille de l'IA:".center(30))
+        print("")
+        lettres = "       " + "   ".join(chr(ord('A') + i) for i in range(10)) + "  "
+        print(lettres + " " * 10 + lettres)
+        print(separateur + " " * 10 + separateur)
+        for i in range(10):
+            ligne_joueur = f"{i+1:2}   | " + " | ".join("X" if x == "X" else "0" if self.grille_joueur.tirs_rates[i][j] else str(x) if x != 0 else " " for j, x in enumerate(self.grille_joueur.grille[i])) + " |"
+            ligne_ia = f"{i+1:2}   | " + " | ".join("X" if x == "X" else "0" if self.tirs_joueur[i][j] and x == 0 else " " for j, x in enumerate(self.grille_ia.grille[i])) + " |"
+            print(ligne_joueur + " " * 10 + ligne_ia)
+            print(separateur + " " * 10 + separateur)
 
     def jouer(self):
-        """
-        Lance la boucle principale du jeu où les joueurs tirent à tour de rôle jusqu'à ce qu'un joueur gagne.
-        """
+        self.placer_bateaux_aleatoire(self.grille_joueur)
+        self.placer_bateaux_aleatoire(self.grille_ia)
+        tour_joueur = True
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-            self.fenetre.fill((255, 255, 255))
-            self.dessiner_grille(self.taille_case, self.taille_case)
-            self.dessiner_grille(self.taille_case * 13, self.taille_case)
-
-            font = pygame.font.SysFont(None, 36)
-            label_joueur = font.render("Votre grille de jeu", True, (0, 0, 0))
-            label_adversaire = font.render("La grille de l'adversaire", True, (0, 0, 0))
-            self.fenetre.blit(label_joueur, (self.taille_case, self.taille_case * 11.5))
-            self.fenetre.blit(label_adversaire, (self.taille_case * 13, self.taille_case * 11.5))
-
-            bouton_jouer = pygame.Rect(self.taille_case * 22, self.taille_case * 5, 100, 50)
-            pygame.draw.rect(self.fenetre, (0, 255, 0), bouton_jouer)
-            label_jouer = font.render("Jouer", True, (0, 0, 0))
-            self.fenetre.blit(label_jouer, (self.taille_case * 22 + 20, self.taille_case * 5 + 10))
-
-            pygame.display.flip()
-
-            if self.est_fini():
-                gagnant = "joueur1" if all(navire.est_coule() for navire in self.joueur2.grille_personnelle.navires) else "joueur2"
-                print("Jeu terminé! Le gagnant est " + gagnant + " !")
-                break
-
-            if self.tour == self.joueur1:
-                # Tour du joueur humain
-                x = int(input("Entrer la coordonnée x: "))
-                y = int(input("Entrer la coordonnée y: "))
-                position = (x, y)
-                self.joueur1.tirer(position, self.joueur2)
+            self.afficher_grilles()
+            if tour_joueur:
+                print("")
+                print("\t\t+------------------------------------------------------------+")
+                print("\t\t|                          AIDES                             |")
+                print("\t\t+------------------------------------------------------------+")
+                print("\t\t| 0- indique qu’il n’y a pas de bateau                       |")
+                print("\t\t| 2- indique la présence d’un torpilleur                     |")
+                print("\t\t| 3- indique la présence d’un sous-marin                     |") 
+                print("\t\t| 3- indique la présence d’un contre-torpilleur              |")
+                print("\t\t| 4- indique la présence d’un croiseur                       |") 
+                print("\t\t| 5- indique la présence d’un porte-avions                   |") 
+                print("\t\t| 6- ou X- indique la présence d’un endroit de bateau touché |")
+                print("\t\t+------------------------------------------------------------+")
+                print("")
+                print("C'est votre tour de jouer.")
+                coup = input("Entrez la position pour tirer (exemple: A4):  ").upper()
+                y = ord(coup[0]) - 65
+                x = int(coup[1:]) - 1
+                if 0 <= x < 10 and 0 <= y < 10:
+                    resultat = self.grille_ia.recevoir_tir(x, y)
+                    self.tirs_joueur[x][y] = True  # Marque cette position comme attaquée
+                    print(f" >>> Cible {resultat}")
+                else:
+                    print("Coordonnées invalides. Essayez encore.")
             else:
-                # Tour de l'IA
-                self.joueur2.tirer(self.joueur1)
+                print("Tour de l'IA...")
+                x = random.randint(0, 9)
+                y = random.randint(0, 9)
+                resultat = self.grille_joueur.recevoir_tir(x, y)
+                print(f"L'IA tiré en {chr(65+y)}{x+1} : >>> {resultat}")
+            tour_joueur = not tour_joueur
 
-            self.changer_tour()
-
-            
-
-if __name__ == "__main__":
-    pygame.init()
-
-    joueur1 = Joueur("Alice")
-    joueur2 = IA("Bob")
-
-    navire1 = Navire(5, "Porte-avions")
-    navire2 = Navire(4, "Cuirassé")
-
-    joueur1.placer_navire(navire1, [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)])
-    joueur2.placer_navire(navire2, [(1, 0), (1, 1), (1, 2), (1, 3)])
-
-    jeu = Jeu(joueur1, joueur2)
-    jeu.jouer()
