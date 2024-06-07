@@ -7,7 +7,21 @@ import random
 import time
 import os
 
+from Grille import*
+from main import*
 
+# Initialisation de Pygame
+pygame.init()
+
+# Constantes de la fenêtre
+LARGEUR_ECRAN = 1920
+HAUTEUR_ECRAN = 1080
+TAILLE_GRILLE = 10
+TAILLE_CELLULE = 45  # Ajusté pour utiliser l'espace disponible
+MARGE = 20
+
+# Couleurs
+GRIS = (199, 199, 199)
 # Couleurs
 BLANC = (255, 255, 255)
 NOIR = (0, 0, 0)
@@ -49,19 +63,35 @@ son_selection_capture2 = pygame.mixer.Sound(effet_5)
 
 
 class EcranJeu:
+    # Placer des bateaux de manière fixe pour le test
+    # def configurer_jeu():
+    #     jeu = main()
+                                
+
+    #     jeu.grille1.placer_bateau(0, 0, "porte_avions", 'V')
+    #     jeu.grille1.placer_bateau(4, 2, "croiseur", 'V')
+    #     jeu.grille1.placer_bateau(6, 1, "contre_torpilleur", 'H')
+    #     jeu.grille1.placer_bateau(7, 1, "sous_marin", 'H')
+    #     jeu.grille1.placer_bateau(8, 3, "torpilleur", 'H')
+
+    #     jeu.grille2.placer_bateaux_aleatoires()
+
+    #     jeu.executer_jeu()
+        
     def __init__(self):
         self.message = "Jeu en cours..."
-
-    def afficher(self):
-        fenetre.fill(BLANC)
-        self._afficher_message()
-        pygame.display.flip()
 
     def _afficher_message(self):
         message_surface = police.render(self.message, True, NOIR)
         message_rect = message_surface.get_rect()
         message_rect.center = (largeur // 2, hauteur // 2)
         fenetre.blit(message_surface, message_rect)
+    
+    def afficher(self):
+        fenetre.fill(BLANC)
+        self._afficher_message()
+        pygame.display.flip()
+
 
 
 
@@ -88,9 +118,9 @@ class EcranChargement:
         # Vérification si le temps écoulé a atteint ou dépassé la durée de la vidéo
         if video_time >= self.video.duration:
             # Incrémenter le compteur de boucles
-            self.loop_count += 1
+            self.loop_count += 2
             # Vérifier si le nombre de boucles est atteint
-            if self.loop_count >= 1:
+            if self.loop_count >= 2:
                 # Arrêter la vidéo
                 return
             # Réinitialiser le temps de démarrage pour afficher la vidéo en boucle
@@ -103,7 +133,7 @@ class EcranChargement:
 
     def video_terminee(self):
         # La vidéo est considérée comme terminée après avoir bouclé trois fois
-        return self.loop_count >= 1
+        return self.loop_count >= 2
 
 
 

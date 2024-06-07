@@ -34,10 +34,10 @@ class Menu:
 
     def _afficher_titre(self):
         chemin_police = "font/font_7/ka1.ttf"
-        chemin_police1 = "assets/fonts/game_of_squids/Game Of Squids.ttf"
-        chemin_police2 = "assets/fonts/handwriting_draft/handwriting-draft_free-version.ttf"
-        chemin_police3 = "assets/fonts/sketch_gothic_school/Sketch Gothic School.ttf"
-        chemin_police4 = "assets/fonts/madina/Madina.ttf"
+        chemin_police1 = "BatlleShip/assets/fonts/game_of_squids/Game Of Squids.ttf"
+        chemin_police2 = "BatlleShip/assets/fonts/handwriting_draft/handwriting-draft_free-version.ttf"
+        chemin_police3 = "BatlleShip/assets/fonts/sketch_gothic_school/Sketch Gothic School.ttf"
+        chemin_police4 = "BatlleShip/assets/fonts/madina/Madina.ttf"
 
         #taille  et police du texte
         taille_police_0 = 80
@@ -86,7 +86,7 @@ class Menu:
 
 
     def _afficher_options(self):
-        chemin_police = "assets/fonts/handwriting_draft/handwriting-draft_free-version.ttf"
+        chemin_police = "BatlleShip/assets/fonts/handwriting_draft/handwriting-draft_free-version.ttf"
         taille_police = 70
         police = pygame.font.Font(chemin_police, taille_police)
         for i, option_texte in enumerate(self.options):

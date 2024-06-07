@@ -2,26 +2,12 @@ import pygame
 from moviepy.editor import VideoFileClip
 import numpy as np
 import math
-import time
+
 import sys
 import random
-from Grille import*
-from main import*
+import time
+import os
 
-# Initialisation de Pygame
-pygame.init()
-
-# Constantes de la fenêtre
-LARGEUR_ECRAN = 1920
-HAUTEUR_ECRAN = 1080
-TAILLE_GRILLE = 10
-TAILLE_CELLULE = 45  # Ajusté pour utiliser l'espace disponible
-MARGE = 20
-
-# Couleurs
-GRIS = (199, 199, 199)
-BLANC = (255, 255, 255)
-NOIR = (0, 0, 0)
 
 
 
@@ -35,6 +21,7 @@ from game_final import*
 if __name__ == "__main__":
     menu = Menu(["Jouer", "Options", "Quitter"])
     ecran_jeu = EcranJeu()
+    ecran_jeu_1 = configurer_jeu()
     ecran_options = EcranOptions()
     ecran_chargement = EcranChargement()  # Ajout d'une instance de la classe EcranChargement
 
@@ -47,13 +34,13 @@ if __name__ == "__main__":
 
         elif ecran_actuel == "Jeu":
             if ecran_chargement.video_terminee():
-                ecran_jeu.afficher()  # Afficher le jeu JeuJcJ lorsque ecran_actuel est "Jeu"
+                ecran_jeu_1.afficher()  # Afficher le jeu JeuJcJ lorsque ecran_actuel est "Jeu"
             else:
                 ecran_chargement.afficher()
 
         elif ecran_actuel == "Jouer":
             if ecran_chargement.video_terminee():
-                ecran_jeu.jouer()  # Afficher le jeu lorsque ecran_actuel est "Jeu"
+                ecran_jeu_1.jouer()  # Afficher le jeu lorsque ecran_actuel est "Jeu"
             else:
                 ecran_chargement.afficher()
         elif ecran_actuel == "Options":

@@ -2,9 +2,6 @@ import pygame
 import sys
 import random
 
-# from Bateau import*
-# from game_final import*
-
 # Initialisation de Pygame
 pygame.init()
 
@@ -20,6 +17,25 @@ GRIS = (199, 199, 199)
 BLANC = (255, 255, 255)
 NOIR = (0, 0, 0)
 
+
+class Bouton(pygame.sprite.Sprite):
+    def __init__(self, x, y, texte):
+        super().__init__()
+        self.image = pygame.image.load("bouton.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.texte = texte
+        self.font = pygame.font.SysFont("sans-serif", 36)
+        self.etiquette = self.font.render(self.texte, True, NOIR)
+
+    def dessiner(self, screen):
+        screen.blit(self.image, self.rect)
+        screen.blit(self.etiquette, (self.rect.x + (self.rect.width - self.etiquette.get_width()) // 2,
+                                    self.rect.y + (self.rect.height - self.etiquette.get_height()) // 2))
+
+    def est_clique(self, pos):
+        return self.rect.collidepoint(pos)
 
 # Classe pour représenter la grille
 class Grille:
@@ -54,20 +70,14 @@ class Grille:
     def placer_bateau(self, ligne_depart, colonne_depart, type_navire, orientation='H'):
         taille = self.taille_navires[type_navire]
         if orientation == 'H':
-            if colonne_depart + taille + 1 <= TAILLE_GRILLE:  # +1 pour la distance autour du bateau
+            if colonne_depart + taille <= TAILLE_GRILLE:
                 for i in range(taille):
                     self.grille[ligne_depart][colonne_depart + i] = 1
-                # Ajouter une distance autour du bateau
-                for i in range(taille + 2):  # +2 pour les bords gauche et droit
-                    self.grille[ligne_depart][colonne_depart + i - 1] = 2  # 2 pour indiquer la distance autour du bateau
                 self.navires.append((ligne_depart, colonne_depart, type_navire, orientation))
         elif orientation == 'V':
-            if ligne_depart + taille + 1 <= TAILLE_GRILLE:  # +1 pour la distance autour du bateau
+            if ligne_depart + taille <= TAILLE_GRILLE:
                 for i in range(taille):
                     self.grille[ligne_depart + i][colonne_depart] = 1
-                # Ajouter une distance autour du bateau
-                for i in range(taille + 2):  # +2 pour les bords haut et bas
-                    self.grille[ligne_depart + i - 1][colonne_depart] = 2  # 2 pour indiquer la distance autour du bateau
                 self.navires.append((ligne_depart, colonne_depart, type_navire, orientation))
 
     def placer_bateaux_aleatoires(self):
@@ -177,3 +187,72 @@ class Grille:
                 elif orientation == 'V':
                     for i in range(taille):
                         self.grille[nouvelle_ligne + i][nouvelle_colonne] = 1
+
+# Classe principale du jeu
+class JeuBatailleNavale:
+    def __init__(self):
+        self.ecran = pygame.display.set_mode((LARGEUR_ECRAN, HAUTEUR_ECRAN))
+        pygame.display.set_caption("Bataille Navale")
+        self.horloge = pygame.time.Clock()
+        self.grille1 = Grille(100, 100)
+        self.grille2 = Grille(1080, 100)  # Ajusté pour être à droite de la première grille
+        self.selectionne_joueur1 = None
+        self.selectionne_joueur2 = None
+        self.joueur_actif = 1  # Commence par le joueur 1
+
+    def executer_jeu(self):
+        en_cours = True
+        en_placement = True
+
+        while en_cours:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    en_cours = False
+                elif event.type == pygame.MOUSEBUTTONDOWN and en_placement:
+                    pos = pygame.mouse.get_pos()
+                    if self.joueur_actif == 1:
+                        index, type_navire = self.grille1.obtenir_navire_sous_souris(pos)
+                        if index is not None:
+                            self.selectionne_joueur1 = index
+                    elif self.joueur_actif == 2:
+                        index, type_navire = self.grille2.obtenir_navire_sous_souris(pos)
+                        if index is not None:
+                            self.selectionne_joueur2 = index
+                elif event.type == pygame.MOUSEBUTTONUP and en_placement:
+                    if self.joueur_actif == 1:
+                        self.selectionne_joueur1 = None
+                    elif self.joueur_actif == 2:
+                        self.selectionne_joueur2 = None
+                elif event.type == pygame.MOUSEMOTION and en_placement:
+                    pos = pygame.mouse.get_pos()
+                    nouvelle_colonne = (pos[0] - MARGE) // (TAILLE_CELLULE + MARGE)
+                    nouvelle_ligne = (pos[1] - MARGE) // (TAILLE_CELLULE + MARGE)
+                    if self.joueur_actif == 1 and self.selectionne_joueur1 is not None:
+                        self.grille1.deplacer_navire(self.selectionne_joueur1, nouvelle_ligne, nouvelle_colonne)
+                    elif self.joueur_actif == 2 and self.selectionne_joueur2 is not None:
+                        self.grille2.deplacer_navire(self.selectionne_joueur2, nouvelle_ligne, nouvelle_colonne)
+
+            self.ecran.fill(GRIS)
+            self.grille1.dessiner(self.ecran)
+            self.grille2.dessiner(self.ecran)
+            pygame.display.flip()
+            self.horloge.tick(60)
+
+        pygame.quit()
+        sys.exit()
+
+# Placer des bateaux de manière fixe pour le test
+def configurer_jeu():
+    jeu = JeuBatailleNavale()
+    jeu.grille1.placer_bateau(0, 0, "porte_avions", 'H')
+    jeu.grille1.placer_bateau(4, 1, "croiseur", 'V')
+    jeu.grille1.placer_bateau(6, 1, "contre_torpilleur", 'H')
+    jeu.grille1.placer_bateau(7, 1, "sous_marin", 'H')
+    jeu.grille1.placer_bateau(8, 3, "torpilleur", 'H')
+
+    jeu.grille2.placer_bateaux_aleatoires()
+
+    jeu.executer_jeu()
+
+if __name__ == "__main__":
+    configurer_jeu()
