@@ -139,132 +139,76 @@ class Grille:
             taille = self.taille_navires[type_navire]
             x = self.decalage_x + MARGE + (MARGE + TAILLE_CELLULE) * colonne + ESPACE_ETIQUETTES
             y = self.decalage_y + MARGE + (MARGE + TAILLE_CELLULE) * ligne + ESPACE_ETIQUETTES
+            w = TAILLE_CELLULE * taille + MARGE * (taille - 1) if orientation == 'H' else TAILLE_CELLULE
+            h = TAILLE_CELLULE * taille + MARGE * (taille - 1) if orientation == 'V' else TAILLE_CELLULE
 
-            if orientation == 'H':
-                rect = pygame.Rect(x, y, TAILLE_CELLULE * taille + MARGE * (taille - 1), TAILLE_CELLULE)
-            elif orientation == 'V':
-                rect = pygame.Rect(x, y, TAILLE_CELLULE, TAILLE_CELLULE * taille + MARGE * (taille - 1))
+            if x <= pos[0] <= x + w and y <= pos[1] <= y + h:
+                return i
+        return None
 
-            if rect.collidepoint(pos):
-                return i, type_navire
-        return None, None
-
-    def deplacer_navire(self, index, nouvelle_ligne, nouvelle_colonne):
-        if 0 <= nouvelle_ligne < TAILLE_GRILLE and 0 <= nouvelle_colonne < TAILLE_GRILLE:
-            ligne, colonne, type_navire, orientation = self.navires[index]
+    def deplacer_navire(self, index, nouvelle_direction):
+        if index is not None and 0 <= index < len(self.navires):
+            ligne, colonne, type_navire, _ = self.navires[index]
             taille = self.taille_navires[type_navire]
+            
+            if nouvelle_direction == 'H':
+                if self.peut_placer_bateau(ligne, colonne, taille, 'H'):
+                    for i in range(taille):
+                        self.grille[ligne][colonne + i] = 0
+                    self.navires[index] = (ligne, colonne, type_navire, 'H')
+                    for i in range(taille):
+                        self.grille[ligne][colonne + i] = 1
+            elif nouvelle_direction == 'V':
+                if self.peut_placer_bateau(ligne, colonne, taille, 'V'):
+                    for i in range(taille):
+                        self.grille[ligne + i][colonne] = 0
+                    self.navires[index] = (ligne, colonne, type_navire, 'V')
+                    for i in range(taille):
+                        self.grille[ligne + i][colonne] = 1
 
-            if orientation == 'H' and nouvelle_colonne + taille > TAILLE_GRILLE:
-                return
-            if orientation == 'V' and nouvelle_ligne + taille > TAILLE_GRILLE:
-                return
-
-            for i in range(taille):
-                if orientation == 'H' and self.grille[nouvelle_ligne][nouvelle_colonne + i] != 0:
-                    return
-                if orientation == 'V' and self.grille[nouvelle_ligne + i][nouvelle_colonne] != 0:
-                    return
-
-            if orientation == 'H':
-                for i in range(taille):
-                    self.grille[ligne][colonne + i] = 0
-            elif orientation == 'V':
-                for i in range(taille):
-                    self.grille[ligne + i][colonne] = 0
-
-            self.navires[index] = (nouvelle_ligne, nouvelle_colonne, type_navire, orientation)
-            if orientation == 'H':
-                for i in range(taille):
-                    self.grille[nouvelle_ligne][nouvelle_colonne + i] = 1
-            elif orientation == 'V':
-                for i in range(taille):
-                    self.grille[nouvelle_ligne + i][nouvelle_colonne] = 1
-
-# Classe principale du jeu
-class JeuBatailleNavale:
+# Classe pour gérer l'application de bataille navale
+class BatailleNavaleApp:
     def __init__(self):
-        self.ecran = pygame.display.set_mode((LARGEUR_ECRAN, HAUTEUR_ECRAN))
+        self.screen = pygame.display.set_mode((LARGEUR_ECRAN, HAUTEUR_ECRAN))
         pygame.display.set_caption("Bataille Navale")
-        self.horloge = pygame.time.Clock()
-        self.grille1 = Grille(100, 100)
-        self.grille2 = Grille(1080, 100)
-        self.selectionne_joueur1 = None
-        self.selectionne_joueur2 = None
-        self.joueur_actif = 1
-        self.joueur1_pret = False  # Indique si le joueur 1 est prêt
+        self.clock = pygame.time.Clock()
+        self.grille_joueur = Grille(30, 30)
+        self.grille_ordinateur = Grille(LARGEUR_ECRAN - 30 - (TAILLE_GRILLE * (TAILLE_CELLULE + MARGE)), 30)
+        self.grille_ordinateur.placer_bateaux_aleatoires()
+        self.selectionne_navire = None
+        self.font = pygame.font.SysFont("sans-serif", 36)
 
-        # Dimensions du bouton "Prêt"
-        self.bouton_pret = pygame.Rect(280, 650, 150, 50)  # Position et taille du bouton
-
-    def executer_jeu(self):
-        en_cours = True
-        en_placement = True
-
-        while en_cours:
+    def run(self):
+        running = True
+        while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    en_cours = False
+                    running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
-                    if self.bouton_pret.collidepoint(pos):
-                        self.joueur1_pret = True  # Le joueur 1 est prêt
-                        en_placement = False  # Terminer la phase de placement pour le joueur 1
-                    elif en_placement and not self.joueur1_pret:
-                        if self.joueur_actif == 1:
-                            index, type_navire = self.grille1.obtenir_navire_sous_souris(pos)
-                            if index is not None:
-                                self.selectionne_joueur1 = index
-                        elif self.joueur_actif == 2:
-                            index, type_navire = self.grille2.obtenir_navire_sous_souris(pos)
-                            if index is not None:
-                                self.selectionne_joueur2 = index
-                elif event.type == pygame.MOUSEBUTTONUP and en_placement:
-                    if self.joueur_actif == 1:
-                        self.selectionne_joueur1 = None
-                    elif self.joueur_actif == 2:
-                        self.selectionne_joueur2 = None
-                elif event.type == pygame.MOUSEMOTION and en_placement and not self.joueur1_pret:
-                    pos = pygame.mouse.get_pos()
-                    nouvelle_colonne = (pos[0] - MARGE) // (TAILLE_CELLULE + MARGE)
-                    nouvelle_ligne = (pos[1] - MARGE) // (TAILLE_CELLULE + MARGE)
-                    if self.joueur_actif == 1 and self.selectionne_joueur1 is not None:
-                        self.grille1.deplacer_navire(self.selectionne_joueur1, nouvelle_ligne, nouvelle_colonne)
-                    elif self.joueur_actif == 2 and self.selectionne_joueur2 is not None:
-                        self.grille2.deplacer_navire(self.selectionne_joueur2, nouvelle_ligne, nouvelle_colonne)
+                    self.selectionne_navire = self.grille_joueur.obtenir_navire_sous_souris(pos)
+                elif event.type == pygame.KEYDOWN:
+                    if self.selectionne_navire is not None:
+                        if event.key == pygame.K_LEFT:
+                            self.grille_joueur.deplacer_navire(self.selectionne_navire, 'H')
+                        elif event.key == pygame.K_RIGHT:
+                            self.grille_joueur.deplacer_navire(self.selectionne_navire, 'V')
 
-            self.ecran.fill(GRIS)
-            self.grille1.dessiner(self.ecran)
-            self.grille2.dessiner(self.ecran)
+            self.screen.fill(GRIS)
+            self.grille_joueur.dessiner(self.screen)
+            self.grille_ordinateur.dessiner(self.screen)
 
-            # Dessiner le bouton "Prêt"
-            if not self.joueur1_pret:
-                pygame.draw.rect(self.ecran, VERT, self.bouton_pret)
-                font = pygame.font.SysFont("sans-serif", 36)
-                texte_pret = font.render("Prêt", True, NOIR)
-                self.ecran.blit(texte_pret, (self.bouton_pret.x + 50, self.bouton_pret.y + 10))
+            bouton_valider_rect = pygame.Rect(LARGEUR_ECRAN // 2 - 100, HAUTEUR_ECRAN - 70, 200, 50)
+            pygame.draw.rect(self.screen, VERT, bouton_valider_rect)
+            text_valider = self.font.render("Valider", True, NOIR)
+            self.screen.blit(text_valider, (bouton_valider_rect.x + 50, bouton_valider_rect.y + 10))
 
             pygame.display.flip()
-            self.horloge.tick(60)
+            self.clock.tick(60)
 
         pygame.quit()
-        sys.exit()
 
-# Placer des bateaux de manière fixe pour le test
-def configurer_jeu():
-    jeu = JeuBatailleNavale()
-
-    # Placement fixe des navires pour le joueur 1
-    jeu.grille1.placer_bateau(0, 0, "porte_avions", 'H')
-    jeu.grille1.placer_bateau(4, 2, "croiseur", 'V')
-    jeu.grille1.placer_bateau(6, 1, "contre_torpilleur", 'H')
-    jeu.grille1.placer_bateau(7, 1, "sous_marin", 'H')
-    jeu.grille1.placer_bateau(8, 3, "torpilleur", 'H')
-
-    # Placement aléatoire des navires pour le joueur 2
-    jeu.grille2.placer_bateaux_aleatoires()
-
-    # Exécute le jeu
-    jeu.executer_jeu()
-
+# Lancer l'application
 if __name__ == "__main__":
-    configurer_jeu()
+    app = BatailleNavaleApp()
+    app.run()

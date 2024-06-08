@@ -149,13 +149,10 @@ class Grille:
                 return i, type_navire
         return None, None
 
-    def deplacer_navire(self, index, nouvelle_ligne, nouvelle_colonne, nouvelle_orientation=None):
+    def deplacer_navire(self, index, nouvelle_ligne, nouvelle_colonne):
         if 0 <= nouvelle_ligne < TAILLE_GRILLE and 0 <= nouvelle_colonne < TAILLE_GRILLE:
             ligne, colonne, type_navire, orientation = self.navires[index]
             taille = self.taille_navires[type_navire]
-
-            if nouvelle_orientation:
-                orientation = nouvelle_orientation
 
             if orientation == 'H' and nouvelle_colonne + taille > TAILLE_GRILLE:
                 return
@@ -184,7 +181,7 @@ class Grille:
                     self.grille[nouvelle_ligne + i][nouvelle_colonne] = 1
 
 # Classe principale du jeu
-class JeuBatailleNavale:
+class game_start:
     def __init__(self):
         self.ecran = pygame.display.set_mode((LARGEUR_ECRAN, HAUTEUR_ECRAN))
         pygame.display.set_caption("Bataille Navale")
@@ -198,15 +195,10 @@ class JeuBatailleNavale:
 
         # Dimensions du bouton "Prêt"
         self.bouton_pret = pygame.Rect(280, 650, 150, 50)  # Position et taille du bouton
-        self.champ_direction = pygame.Rect(280, 720, 150, 50)  # Position et taille du champ de saisie
-        self.bouton_valider_direction = pygame.Rect(450, 720, 150, 50)  # Bouton pour valider la direction
-
-        self.direction = 'H'  # Direction par défaut
 
     def executer_jeu(self):
         en_cours = True
         en_placement = True
-        actif_champ_direction = False
 
         while en_cours:
             for event in pygame.event.get():
@@ -217,16 +209,7 @@ class JeuBatailleNavale:
                     if self.bouton_pret.collidepoint(pos):
                         self.joueur1_pret = True  # Le joueur 1 est prêt
                         en_placement = False  # Terminer la phase de placement pour le joueur 1
-                    elif self.champ_direction.collidepoint(pos):
-                        actif_champ_direction = True
-                    elif self.bouton_valider_direction.collidepoint(pos):
-                        if self.selectionne_joueur1 is not None:
-                            navire = self.grille1.navires[self.selectionne_joueur1]
-                            self.grille1.deplacer_navire(self.selectionne_joueur1, navire[0], navire[1], self.direction)
-                    else:
-                        actif_champ_direction = False
-
-                    if en_placement and not self.joueur1_pret:
+                    elif en_placement and not self.joueur1_pret:
                         if self.joueur_actif == 1:
                             index, type_navire = self.grille1.obtenir_navire_sous_souris(pos)
                             if index is not None:
@@ -248,13 +231,6 @@ class JeuBatailleNavale:
                         self.grille1.deplacer_navire(self.selectionne_joueur1, nouvelle_ligne, nouvelle_colonne)
                     elif self.joueur_actif == 2 and self.selectionne_joueur2 is not None:
                         self.grille2.deplacer_navire(self.selectionne_joueur2, nouvelle_ligne, nouvelle_colonne)
-                elif event.type == pygame.KEYDOWN and actif_champ_direction:
-                    if event.key == pygame.K_BACKSPACE:
-                        self.direction = self.direction[:-1]
-                    elif event.key == pygame.K_RETURN:
-                        actif_champ_direction = False
-                    else:
-                        self.direction += event.unicode.upper()
 
             self.ecran.fill(GRIS)
             self.grille1.dessiner(self.ecran)
@@ -267,16 +243,6 @@ class JeuBatailleNavale:
                 texte_pret = font.render("Prêt", True, NOIR)
                 self.ecran.blit(texte_pret, (self.bouton_pret.x + 50, self.bouton_pret.y + 10))
 
-                # Dessiner le champ de saisie pour la direction
-                pygame.draw.rect(self.ecran, BLANC, self.champ_direction)
-                texte_direction = font.render(self.direction, True, NOIR)
-                self.ecran.blit(texte_direction, (self.champ_direction.x + 10, self.champ_direction.y + 10))
-
-                # Dessiner le bouton pour valider la direction
-                pygame.draw.rect(self.ecran, VERT, self.bouton_valider_direction)
-                texte_valider = font.render("Valider", True, NOIR)
-                self.ecran.blit(texte_valider, (self.bouton_valider_direction.x + 20, self.bouton_valider_direction.y + 10))
-
             pygame.display.flip()
             self.horloge.tick(60)
 
@@ -285,10 +251,10 @@ class JeuBatailleNavale:
 
 # Placer des bateaux de manière fixe pour le test
 def configurer_jeu():
-    jeu = JeuBatailleNavale()
+    jeu = game_start()
 
     # Placement fixe des navires pour le joueur 1
-    jeu.grille1.placer_bateau(0, 0, "porte_avions", 'V')
+    jeu.grille1.placer_bateau(0, 0, "porte_avions", 'H')
     jeu.grille1.placer_bateau(4, 2, "croiseur", 'V')
     jeu.grille1.placer_bateau(6, 1, "contre_torpilleur", 'H')
     jeu.grille1.placer_bateau(7, 1, "sous_marin", 'H')

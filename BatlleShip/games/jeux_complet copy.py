@@ -14,14 +14,14 @@ import os
 #importation des class et methode 
 from affichge_ecran import *
 from Menu import *
-from game_final import*
+# from game_final import  *
 
 
 
 if __name__ == "__main__":
     menu = Menu(["Jouer", "Options", "Quitter"])
     ecran_jeu = EcranJeu()
-    ecran_jeu_1 = configurer_jeu()
+    # ecran_jeu_1 = configurer_jeu()
     ecran_options = EcranOptions()
     ecran_chargement = EcranChargement()  # Ajout d'une instance de la classe EcranChargement
 
@@ -34,13 +34,13 @@ if __name__ == "__main__":
 
         elif ecran_actuel == "Jeu":
             if ecran_chargement.video_terminee():
-                ecran_jeu_1.afficher()  # Afficher le jeu JeuJcJ lorsque ecran_actuel est "Jeu"
+                ecran_jeu.afficher()  # Afficher le jeu JeuJcJ lorsque ecran_actuel est "Jeu"
             else:
                 ecran_chargement.afficher()
 
         elif ecran_actuel == "Jouer":
             if ecran_chargement.video_terminee():
-                ecran_jeu_1.jouer()  # Afficher le jeu lorsque ecran_actuel est "Jeu"
+                ecran_jeu.jouer()  # Afficher le jeu lorsque ecran_actuel est "Jeu"
             else:
                 ecran_chargement.afficher()
         elif ecran_actuel == "Options":

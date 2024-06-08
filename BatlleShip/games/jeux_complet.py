@@ -5,10 +5,9 @@ import math
 import time
 import sys
 import random
-from Grille import*
-from main import*
+# from Grille import*
+# from main import*
 
-# Initialisation de Pygame
 pygame.init()
 
 # Constantes de la fenêtre
@@ -28,7 +27,7 @@ NOIR = (0, 0, 0)
 #importation des class et methode 
 from affichge_ecran import *
 from Menu import *
-from game_final import*
+# from game_final import*
 
 
 

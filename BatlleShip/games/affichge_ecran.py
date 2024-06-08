@@ -1,14 +1,13 @@
 import pygame
 from moviepy.editor import VideoFileClip
-import numpy as np
 import math
-import sys
 import random
 import time
-import os
 
-from Grille import*
-from main import*
+# from Grille import*
+# from main import*
+
+# from Interface.game_start import *
 
 # Initialisation de Pygame
 pygame.init()
@@ -79,7 +78,7 @@ class EcranJeu:
     #     jeu.executer_jeu()
         
     def __init__(self):
-        self.message = "Jeu en cours..."
+        self.message = "Nathan"
 
     def _afficher_message(self):
         message_surface = police.render(self.message, True, NOIR)
